@@ -43,7 +43,7 @@
     </li>
 </template>
 <script>
-    import Bus from '../../config/global/bus.js'
+    import Bus from '../config/global/bus.js'
     export default {
         name: 'treeMenu',
         props: ['model','treeLevel','sendCheckStatus','sonIndex','treeOption','actTreeLevel'],
@@ -66,7 +66,7 @@
             },
 //            当前的层级
             currentLevel:function () {
-                var currentArr=this.treeLevel?this.$deepCopyArr(this.treeLevel):this.$deepCopyArr([])
+                var currentArr=this.treeLevel?this.treeLevel.concat([]):[]
                 currentArr.push(this.model)
                 return currentArr
             },
@@ -139,6 +139,7 @@
                 if(this.model.special=='all') return
                 if(this.model[this.treeOption.translate.hasChild]==0) return   //如果没儿子  就不用找了
                 if(reload||this.modelChild.length==0) {//如果儿子没加载出来
+
                     this.getSonData()
                 }
                 if (this.isFolder) {
@@ -153,9 +154,23 @@
                 for(var i in this.treeOption.arg){
                     argument[i]=this.treeOption.arg[i]
                 }
-                this.$httpPost(this.treeOption.api,argument,function (res) {
+                var res={}
+                 res[this.treeOption.resName]=this.$getTreeList(this.model[this.treeOption.translate.treeModelId])
+                for(var i in res[this.treeOption.resName]){
+                    /*保证每条数据都有一个hasChild属性*/
+                    res[this.treeOption.resName][i][this.treeOption.translate.hasChild]=res[this.treeOption.resName][i][this.treeOption.translate.hasChild]=='undefined'?0:res[this.treeOption.resName][i][this.treeOption.translate.hasChild]
+
+                }
+                this.modelChild=res[this.treeOption.resName];
+                if(this.treeOption.hasCheckBox.show){
+                    for(var i in  this.modelChild){
+                        this.modelChildCheck[i]=0
+                    }
+                }
+
+/*                this.$httpPost(this.treeOption.api,argument,function (res) {
                     for(var i in res[this.treeOption.resName]){
-                      /*保证每条数据都有一个hasChild属性*/
+                      /!*保证每条数据都有一个hasChild属性*!/
                         res[this.treeOption.resName][i][this.treeOption.translate.hasChild]=res[this.treeOption.resName][i][this.treeOption.translate.hasChild]=='undefined'?0:res[this.treeOption.resName][i][this.treeOption.translate.hasChild]
 
                     }
@@ -165,7 +180,7 @@
                             this.modelChildCheck[i]=0
                         }
                     }
-                }.bind(this))
+                }.bind(this))*/
               /* this.modelChild=this.getRandomProject()*/
             },
             /*当选中当前层级时，向根tree传弟当前信息*/
@@ -237,6 +252,7 @@
             }.bind(this))
             /*如果不要求异步加载儿 ，把儿子全部加载出来*/
             if(this.treeOption.loadAll){
+                console.log(11)
                 this.getSonData()
                 this.initCheck()
             }
