@@ -84,7 +84,7 @@
         methods:{
             getData:function () {
                 this.demoTree.treeLevel={}
-                this.demoTree.checkEditJson.data=[]
+                this.demoTree.checkEditJson=[]
                 this.demoTree.treeList=this.$getTreeList(0)
             },
             changeShowCheckBox:function () {
