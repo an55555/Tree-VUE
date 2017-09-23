@@ -1,6 +1,7 @@
 /**
  * Created by Administrator on 2017/9/15.
  */
+import 'babel-polyfill'
 import Vue from 'vue'
 import App from '../src/App.vue'
 import {cube} from '../src/main.js'
@@ -28,13 +29,13 @@ function sayHello() {
 }
 */
 
-async function sayHello() {
-    return import(/*webpackChunkName:"hello"*/ './config/Hello.js')
+/*async function sayHello() {
+    return import(/!*webpackChunkName:"hello"*!/ './config/Hello.js')
 }
 
 sayHello().then(component=>{
     component.default("Hello,Tree")
-})
+})*/
 
 new Vue({
     el:'#app',
